@@ -8,21 +8,20 @@ import articleRouter from "./routes/articles.js";
 import volumeRouter from "./routes/volumes.js";
 import announcementRouter from "./routes/announcements.js";
 import { rateLimit } from "express-rate-limit";
-import helmet from "helmet";
 import bodyParser from "body-parser";
 
 export const app = express();
 
 const corsOptions = {
   origin: [process.env.FRONTEND_URL],
-  methods: ["GET","HEAD","PUT","PATCH","POST","DELETE"],
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
 
 //specify path to env variables
-if(process.env.NODE_ENV !== "PRODUCTION"){
+if (process.env.NODE_ENV !== "PRODUCTION") {
   config({ path: "./configs/config.env" });
 }
 
@@ -40,20 +39,6 @@ const limiter = rateLimit({
 // //Limits no of api calls in a time period
 app.use("/api", limiter);
 
-// Apply security headers
-app.use(helmet());
-
-// Enable specific headers as needed
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "trusted-cdn.com"],
-      // Add more directives as needed
-    },
-  })
-);
-
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/volumes", volumeRouter);
@@ -63,5 +48,5 @@ app.use("/api/v1/announcements", announcementRouter);
 app.use(error);
 
 app.get("*", (req, res) => {
-  res.send("Working")
+  res.send("Working");
 });
