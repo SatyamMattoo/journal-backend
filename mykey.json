@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "sunny-influence-400113",
+  "private_key_id": "664cf2f61d23d69dd0f48e4fc0ab31e7d7050668",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCdlE/jPaCTnk7s\nHcWxuQmwljuDd/bL52fpX3U/N10iUk3khigrA5HRRsINxFYpp4dnAHN70uwipUO/\nmSiEFhDbvX9oxkL90kT1FLNChB568SDal2hMIxLIhmlXClIzEZTmljn2CJInQ/ui\nAf9v5vuD1LqXIYwUxCWw13C9XM2zZzloKQ//lXZ/g58Hgsn6CbwLOSpbedR4KzaT\nuMWQq3gj3klYAeqn4KQXwxUX9DXpAkGhWpB/v8mURfcRU7M5FB7RdYKWShQsAiRI\nw2KOJdqrcQYC+JblvUBdrcNfVkL4Kt5/HJnL0CooI2olt2/KzPkfmQzwNPiCXGkq\n4hFHkf6rAgMBAAECggEAN6RmvymEOYv1d1ed9r8Nhl7OHgKu0VphbV0pNAzTJKrm\nWVLr/SBSDZFMNXtGJ4hB/iOBI9CbVDKCJTYqQdXe1xDnW/JiNmlYsye/krW/Y48g\nmD9Nc1ERMWCQ8sywsNq89t1GEzP8k8PkJ1VIQtXPq0HjLzmH0s9eNb8lTqBl/Dph\nYmYcPoXil4iP6btdCfVeGeCMP1TZT3pnYMnfCiILZn+hEzAzRfO3hPntEZFGh5LR\nIEvBozpEzee2JaT/w3StSUXU6zYe8sB5PYjAnS/iseqdkSQxaMoX3QreKeyrVUE2\nlVeKBuGFi1rRiDwCJ3HmNcXrxjB2Aktj8KLRnVWU4QKBgQDSYM0bTn99/M9wIkCB\n/tTIm6c+CYlJ2BV09MnjLm/jEUHMtOunaEdZ1yJiVz3JSOd0czd8j1XLRMLLfAfO\ne/eQpvqyfxLAelqp/dX9JK9ctVq0WW4PB9/dti9gR9mCUIYA6eGe0Vw9RgBEUnpG\nRb7rHqMOaCxpzRBveXanGSM2IQKBgQC/wF86jJbwsLuRYturSkr1d/WMrRTbk4Ez\nhcCeKXiDdf7O9x0dwwrEqqUF7OLqhyqQK4LRZislzpBIu/D2N7/taHSVJl2Yb937\nbHlceWdcKZFr2upJPiQAF6+Om5+sc0THkApwq/4NDdoPVEf11jrjiIulRJEhoV0N\nlqPm60bDSwKBgQCWoRC6WH4YawbrttqROTCJYklgtdtCsCDM2OgkbX9XCWgfdfq0\npolP3iWUW/q1QCnYyxYTbV10aQtAPtIoGcKsI6KkYy+9+N0pkcHBup6EtqT3NIEE\n6hJz4JoTSd6G27jWtp8A484zYQeX46YA4rdMCWeeTSBfsJ/v8PvvsKPxgQKBgH0l\nu8FFwrmiTzjrMX2RBm1A9sTyrdtFYRzUXcucO2hpWX2QsLMc+ekzinLckZkJ0NC5\nZS7vpJePQoIGD5VS+3OiKfyyRoHX+SRAPtEI91miU6P2A9T7tplM3CqSDVuK+8fX\njcjNqAizEq/QjQq44ERieOnLX4F4hHf66kwrIEsTAoGACrETWwb1uaO8QJ7bgfB/\nZ9DlZuVzlAwLp2YXAZ5BOOq4HW1P2qrhzHE0OGrmdTLde/3gFXdd7SovgZqVjgKN\narRWbnd68Ow5mlHS/5WVw4xwSEJFNWIn7MUV3bt0EtCr+LbCtAwFugyotw7FkKtA\nqapQek7qGZPooP/jSMP5sNk=\n-----END PRIVATE KEY-----\n",
+  "client_email": "hpu-journal@sunny-influence-400113.iam.gserviceaccount.com",
+  "client_id": "116852403237579791111",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hpu-journal%40sunny-influence-400113.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
