@@ -25,8 +25,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 //specify path to env variables
-if(process.env.NODE_ENV!=="PRODUCTION")
-config({ path: "backend/configs/config.env" });
+config({ path: "./configs/config.env" });
 
 //Middlewares
 app.use(express.json());
@@ -66,14 +65,9 @@ app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/volumes", volumeRouter);
 app.use("/api/v1/announcements", announcementRouter);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-app.use(express.static(path.join(__dirname, "../frontend/dist")));
-
 //Error Middleware
 app.use(error);
 
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../frontend/dist/index.html"))
+  res.send("Working")
 });
