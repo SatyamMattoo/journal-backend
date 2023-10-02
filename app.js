@@ -10,9 +10,6 @@ import announcementRouter from "./routes/announcements.js";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import bodyParser from "body-parser";
-import path from "path";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
 export const app = express();
 
@@ -25,7 +22,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 //specify path to env variables
-config({ path: "./configs/config.env" });
+if(process.env.NODE_ENV !== "PRODUCTION"){
+  config({ path: "./configs/config.env" });
+}
 
 //Middlewares
 app.use(express.json());
@@ -33,32 +32,27 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-// const limiter = rateLimit({
-//   windowMs: process.env.LIMIT_TIME,
-//   max: process.env.LIMIT_AMT,
-// });
+const limiter = rateLimit({
+  windowMs: process.env.LIMIT_TIME,
+  max: process.env.LIMIT_AMT,
+});
 
 // //Limits no of api calls in a time period
-// app.use("/api", limiter);
+app.use("/api", limiter);
 
 // Apply security headers
-// app.use(helmet());
+app.use(helmet());
 
 // Enable specific headers as needed
-// app.use(
-//   helmet.contentSecurityPolicy({
-//     directives: {
-//       defaultSrc: ["'self'"],
-//       scriptSrc: ["'self'", "trusted-cdn.com"],
-//       // Add more directives as needed
-//     },
-//   })
-// );
-
-// app.use((req, res, next) => {
-//   res.header("X-Frame-Options", "SAMEORIGIN");
-//   next();
-// });
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "trusted-cdn.com"],
+      // Add more directives as needed
+    },
+  })
+);
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/articles", articleRouter);
