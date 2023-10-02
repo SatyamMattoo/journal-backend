@@ -7,7 +7,6 @@ import userRouter from "./routes/users.js";
 import articleRouter from "./routes/articles.js";
 import volumeRouter from "./routes/volumes.js";
 import announcementRouter from "./routes/announcements.js";
-import { rateLimit } from "express-rate-limit";
 import bodyParser from "body-parser";
 
 export const app = express();
@@ -30,14 +29,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-
-const limiter = rateLimit({
-  windowMs: process.env.LIMIT_TIME,
-  max: process.env.LIMIT_AMT,
-});
-
-// //Limits no of api calls in a time period
-app.use("/api", limiter);
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/articles", articleRouter);
