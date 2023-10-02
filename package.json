@@ -2,14 +2,14 @@
   "name": "hpu",
   "version": "1.0.0",
   "description": "",
-  "main": "/backend/server.js",
+  "main": "/server.js",
   "type": "module",
   "engines": {
     "node":">=14.20.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd ./backend && server.js",
+    "start": "node server.js",
     "dev": "nodemon server.js"
   },
   "author": "",
