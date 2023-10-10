@@ -16,12 +16,13 @@ export const getAllAnnouncements = async (req, res, next) => {
 export const createAnnouncement = async (req, res, next) => {
   try {
     // Get data from the request body
-    const { title, description } = req.body;
+    const { title, description, url } = req.body;
 
     // Use the create function to create and save the new announcement
     const announcement = await Announcement.create({
       title,
       description,
+      url,
     });
 
     res.status(201).json({ success: true, announcement });

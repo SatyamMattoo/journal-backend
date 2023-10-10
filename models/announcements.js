@@ -9,6 +9,9 @@ const announcementSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  url: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
