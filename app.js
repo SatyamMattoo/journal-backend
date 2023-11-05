@@ -12,7 +12,7 @@ import bodyParser from "body-parser";
 export const app = express();
 
 const corsOptions = {
-  origin: [process.env.FRONTEND_URL],
+  origin: "http://localhost:5173",
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
 };
@@ -38,6 +38,6 @@ app.use("/api/v1/announcements", announcementRouter);
 //Error Middleware
 app.use(error);
 
-app.get("*", (req, res) => {
-  res.send("Working");
+app.get("/", (req, res) => {
+  res.render("hi");
 });

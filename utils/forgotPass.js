@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import { sendMail } from "./mails.js"
 
 class UserClass {
   constructor(userModel) {
@@ -37,28 +37,14 @@ class UserClass {
       throw new Error("User has no valid email address.");
     }
 
-    // Create a nodemailer transporter (replace with your email service details)
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMPT_HOST,
-      port: process.env.SMPT_PORT,
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMPT_MAIL, // replace with your email
-        pass: process.env.SMPT_PASSWORD, // replace with your email password
-      },
-    });
+    const emailSubject = "Password Reset for HPU Journal";
+    const emailMessage = `Hello,\nYou have requested to reset your password for your HPU account. 
+    Please click the following link to reset your password:\n${process.env.FRONTEND_URL}/password/reset/${token}\n\n
+    If you did not request this password reset, please disregard this email. 
+    Your password will remain unchanged.\n
+    Thank you,\nHPU,Shimla`;
 
-    // Define the email message
-    const mailOptions = {
-      from: process.env.SMPT_MAIL,
-      to: this.userModel.email,
-      subject: "Password Reset for HPU Journal",
-      text: `Hello,\nYou have requested to reset your password for your HPU account. 
-      Please click the following link to reset your password:\n${process.env.FRONTEND_URL}/password/reset/${token}\n\n
-      If you did not request this password reset, please disregard this email. 
-      Your password will remain unchanged.\n
-      Thank you,\nHPU,Shimla`,
-    };
+    await sendMail(editor.email, emailSubject, emailMessage);
 
     // Send the email
     await transporter.sendMail(mailOptions);

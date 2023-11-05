@@ -84,7 +84,7 @@ export const publishArticle = async (req, res, next) => {
     // Find the article by ID and update its status to "published"
     article = await Articles.findByIdAndUpdate(
       id,
-      { status: "published",createdAt:Date.now() },
+      { status: "published", createdAt: Date.now() },
       { new: true }
     );
 

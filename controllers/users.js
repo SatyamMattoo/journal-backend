@@ -8,11 +8,7 @@ import crypto from "crypto";
 export const createUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-
-    if (password.length < 8)
-      return next(
-        new ErrorHandler("Password must be atleast 8 characters", 400)
-      );
+    console.log(req.body)
 
     let user = await User.findOne({ email });
 
@@ -24,6 +20,7 @@ export const createUser = async (req, res, next) => {
 
     setCookie(res, user, "User Created Successfully", 201);
   } catch (error) {
+    // console.log(error)
     next(error);
   }
 };

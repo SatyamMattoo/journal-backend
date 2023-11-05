@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 export const connectDB = () => {
   mongoose
     .connect(process.env.NODE_DB_URI, {
-      useNewURLParser: true,
+      useNewUrlParser: true,
       dbName: "HPU",
     })
     .then((data) =>
