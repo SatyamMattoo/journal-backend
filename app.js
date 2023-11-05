@@ -7,12 +7,11 @@ import userRouter from "./routes/users.js";
 import articleRouter from "./routes/articles.js";
 import volumeRouter from "./routes/volumes.js";
 import announcementRouter from "./routes/announcements.js";
-import bodyParser from "body-parser";
 
 export const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND_URL,
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
 };
@@ -27,7 +26,6 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 //Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use("/api/v1/users", userRouter);
