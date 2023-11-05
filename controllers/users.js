@@ -8,7 +8,6 @@ import crypto from "crypto";
 export const createUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body)
 
     let user = await User.findOne({ email });
 
@@ -20,7 +19,7 @@ export const createUser = async (req, res, next) => {
 
     setCookie(res, user, "User Created Successfully", 201);
   } catch (error) {
-    // console.log(error)
+    console.log(error)
     next(error);
   }
 };
