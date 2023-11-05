@@ -33,9 +33,9 @@ app.use("/api/v1/articles", articleRouter);
 app.use("/api/v1/volumes", volumeRouter);
 app.use("/api/v1/announcements", announcementRouter);
 
+app.get("/", (req, res) => {
+  res.send("hi");
+});
+
 //Error Middleware
 app.use(error);
-
-app.get("/", (req, res) => {
-  res.render("hi");
-});
