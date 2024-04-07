@@ -5,6 +5,7 @@ import {
   getArticlesForIssue,
   getAssignedArticles,
   getEditors,
+  getPreviousArticles,
   publishArticle,
   publishedArticles,
   readyToPublish,
@@ -12,6 +13,7 @@ import {
   sendToPublish,
   submittedArticles,
   trackProgress,
+  underreviewArticles,
 } from "../controllers/articles.js";
 import { authorizeRoles, isAuthenticated } from "../middlewares/auth.js";
 import { upload } from "../utils/docUpload.js";
@@ -45,6 +47,12 @@ router.get(
   submittedArticles
 );
 router.get(
+  "/admin/underreview",
+  isAuthenticated,
+  authorizeRoles("admin"),
+  underreviewArticles
+);
+router.get(
   "/admin/readytopublish",
   isAuthenticated,
   authorizeRoles("admin"),
@@ -63,6 +71,12 @@ router.get(
   isAuthenticated,
   authorizeRoles("editor"),
   getAssignedArticles
+);
+router.get(
+  "/editor/previous",
+  isAuthenticated,
+  authorizeRoles("editor"),
+  getPreviousArticles
 );
 router.put(
   "/editor/resubmission/:id",

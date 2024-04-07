@@ -15,56 +15,98 @@ export const createArticle = async (req, res, next) => {
       return next(new ErrorHandler("Please upload a doc or pdf file", 400));
 
     // Upload the file to Google Cloud Storage
-    const bucket = storage.bucket("hpujournal"); // Replace with your bucket name
-    const blob = bucket.file(`pdf/${Date.now()}-${req.file.originalname}`);
-    const blobStream = blob.createWriteStream();
+    // const bucket = storage.bucket("hpujournal"); // Replace with your bucket name
+    // const blob = bucket.file(`pdf/${Date.now()}-${req.file.originalname}`);
+    // const blobStream = blob.createWriteStream();
 
-    blobStream.on("error", (err) => {
-      console.error("Error uploading file to Google Cloud Storage:", err);
-      return next(err);
-    });
+    // blobStream.on("error", (err) => {
+    //   console.error("Error uploading file to Google Cloud Storage:", err);
+    //   return next(err);
+    // });
 
-    blobStream.on("finish", async () => {
-      try {
-        // The file has been successfully uploaded to Google Cloud Storage
-        // Generate the Google Cloud Storage URL
-        const gcsUrl = `${process.env.GCS_URL}/${blob.name}`;
+    // blobStream.on("finish", async () => {
+    try {
+      // The file has been successfully uploaded to Google Cloud Storage
+      // Generate the Google Cloud Storage URL
+      // const gcsUrl = `${process.env.GCS_URL}/${blob.name}`;
 
-        // https://storage.googleapis.com/hpujournal
-        // Create a new article instance
-        const newArticle = new Articles({
-          title,
-          description,
-          pdfFile: gcsUrl, // Set the Google Cloud Storage URL
-          author: req.user.id, // Set the author to the user's ID
-          status: "submitted", // You can set the default status here
-        });
+      // https://storage.googleapis.com/hpujournal
+      // Create a new article instance
+      const newArticle = new Articles({
+        title,
+        description,
+        pdfFile: "www.google.com", // Set the Google Cloud Storage URL
+        author: req.user.id, // Set the author to the user's ID
+        status: "submitted", // You can set the default status here
+      });
 
-        // Save the article to the database
-        await newArticle.save();
+      // Save the article to the database
+      await newArticle.save();
 
-        // Send an email to the user with the article ID
-        const emailSubject = "Article Submission Confirmation";
-        const emailMessage = `Your article has been successfully submitted. Your article ID is: ${newArticle._id}. You can use this ID to track your article's status later.`;
+      // Send an email to the user with the article ID
+      const emailSubject = "Article Submission Confirmation";
+      const emailMessage = `
+        <html>
+          <head>
+            <style>
+              /* Define CSS styles for the email */
+              body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                padding: 20px;
+              }
+              .container {
+                background-color: #fff;
+                border-radius: 5px;
+                padding: 20px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              }
+              .title {
+                font-size: 20px;
+                font-weight: bold;
+                color: #333;
+              }
+              .message {
+                font-size: 16px;
+                color: #666;
+              }
+              .article-id {
+                font-size: 16px;
+                color: #00a;
+              }
+              .signature {
+                font-size: 14px;
+                color: #888;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <p class="title">Article Submission Confirmation</p>
+              <p class="message">Your article has been successfully submitted.</p>
+              <p class="message">Your article ID is: <span class="article-id">${newArticle._id}</span>.</p>
+              <p class="message">You can use this ID to track your article's status later.</p>
+              <p class="signature">Thank you,<br/>HPU E-Journal</p>
+            </div>
+          </body>
+        </html>
+      `;
 
-        await sendMail(req.user.email, emailSubject, emailMessage);
+      await sendMail(req.user.email, emailSubject, emailMessage);
 
-        // Respond with a success message or the newly created article
-        res.status(201).json({
-          message: "Article submitted successfully",
-          article: newArticle,
-        });
-      } catch (error) {
-        console.error("Error creating article:", error);
-        next(error);
-      }
-    });
+      // Respond with a success message or the newly created article
+      res.status(201).json({
+        message: "Article submitted successfully",
+        article: newArticle,
+      });
+    } catch (error) {
+      next(error);
+    }
+    // });
 
     // Pipe the uploaded file data into the Google Cloud Storage stream
-    blobStream.end(req.file.buffer);
+    // blobStream.end(req.file.buffer);
   } catch (error) {
-    // Handle errors
-    console.error("Error uploading file to Google Cloud Storage:", error);
     next(error);
   }
 };
@@ -74,7 +116,7 @@ export const publishArticle = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    let article = await Articles.findById(id);
+    let article = await Articles.findById(id).populate("author", "email");
 
     if (article.status !== "readytopublish")
       return next(new ErrorHandler("Article not ready to publish", 404));
@@ -131,6 +173,44 @@ export const publishArticle = async (req, res, next) => {
       await existingVolume.save();
     }
 
+    const emailSubject = "Article Published";
+    const emailMessage = `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Article Published</title>
+        <style>
+          /* Add your CSS styles here */
+          body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+          }
+          .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+          }
+          h1 {
+            color: #007bff;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Article Published</h1>
+          <p>Your article "<strong>${article.title}</strong>" has been successfully published.</p>
+        </div>
+      </body>
+      </html>
+    `;
+    await sendMail(article.author.email, emailSubject, emailMessage);
+
     // Respond with a success message or the updated article
     res.status(200).json({
       message: "Article published successfully",
@@ -171,6 +251,22 @@ export const submittedArticles = async (req, res, next) => {
   }
 };
 
+export const underreviewArticles = async (req, res, next) => {
+  try {
+    const articles = await Articles.find({
+      status: { $in: ["underreview", "resubmission"] }
+    })
+    .populate("author", "name email")
+    .populate("editor", "name email");
+
+    if (!articles) return next(new ErrorHandler("No articles found", 404));
+
+    res.status(200).json({ success: true, articles });
+  } catch (error) {
+    next(error);
+  }
+};
+
 //Users- all articles in a particlular issue
 export const getArticlesForIssue = async (req, res, next) => {
   try {
@@ -201,8 +297,9 @@ export const getArticlesForIssue = async (req, res, next) => {
     const articleIds = issue.articles;
 
     // Fetch article details based on IDs
-    const articles = await Articles.find({ _id: { $in: articleIds } }).select(
-      "title description pdfFile"
+    const articles = await Articles.find({ _id: { $in: articleIds } }).populate(
+      "author",
+      "name email"
     );
 
     res.status(200).json({ success: true, articles });
@@ -227,7 +324,7 @@ export const trackProgress = async (req, res, next) => {
       return next(
         new ErrorHandler(
           "Article with the given ID not found or you are not the author",
-          404
+          400
         )
       );
     }
@@ -256,12 +353,10 @@ export const assignArticleToEditor = async (req, res, next) => {
     if (!editor) {
       return next(new ErrorHandler("Editor not found", 404));
     }
-
-    if (article.editor) {
-      return next(new ErrorHandler("Article already assigned", 404));
-    }
     // Assign the article to the editor by updating the editor field
     article.editor = editorId;
+
+    article.createdAt = Date.now();
 
     // Update the article status to "underreview"
     article.status = "underreview";
@@ -269,7 +364,46 @@ export const assignArticleToEditor = async (req, res, next) => {
     await article.save();
 
     const emailSubject = "New Article Assigned";
-    const emailMessage = `A new article "${article.title}" has been assigned to you.Please check the dashboard and review the article as soon as possible.\nThankyou\n\n HPU E-Journal`;
+    const emailMessage = `
+      <html>
+        <head>
+          <style>
+            /* Define CSS styles for the email */
+            body {
+              font-family: Arial, sans-serif;
+              background-color: #f4f4f4;
+              padding: 20px;
+            }
+            .container {
+              background-color: #fff;
+              border-radius: 5px;
+              padding: 20px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .title {
+              font-size: 20px;
+              font-weight: bold;
+              color: #333;
+            }
+            .message {
+              font-size: 16px;
+              color: #666;
+            }
+            .signature {
+              font-size: 14px;
+              color: #888;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <p class="title">A new article "${article.title}" has been assigned to you.</p>
+            <p class="message">Please check the dashboard and review the article as soon as possible.</p>
+            <p class="signature">Thank you,<br/>HPU E-Journal</p>
+          </div>
+        </body>
+      </html>
+    `;
 
     await sendMail(editor.email, emailSubject, emailMessage);
 
@@ -284,7 +418,10 @@ export const assignArticleToEditor = async (req, res, next) => {
 
 //Admin
 export const readyToPublish = async (req, res, next) => {
-  const articles = await Articles.find({ status: "readytopublish" });
+  const articles = await Articles.find({ status: "readytopublish" }).populate(
+    "author",
+    "name email"
+  );
 
   if (!articles)
     return res.json({
@@ -321,7 +458,7 @@ export const getAssignedArticles = async (req, res, next) => {
     const assignedArticles = await Articles.find({
       editor: editorId,
       status: "underreview",
-    });
+    }).populate("author", "name email");
 
     // Respond with the list of assigned articles
     res.status(200).json({
@@ -337,7 +474,7 @@ export const getAssignedArticles = async (req, res, next) => {
 export const resubmission = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, description } = req.body;
+    const { title, description, link } = req.body;
 
     // Find the article by ID
     const article = await Articles.findById(id);
@@ -375,7 +512,50 @@ export const resubmission = async (req, res, next) => {
     // Notify the user via email about the resubmission
     const user = await User.findById(article.author);
     const emailSubject = "Article Resubmission";
-    const emailMessage = `Your article titled "${article.title}" has been sent for resubmission with the following details:\n\nIssue:  ${title}\n\nDescription: ${description}\n\nPlease resubmit your article with necessary changes for furthur consideration.\nThankyou\n\n HPU E-Journal`;
+    const emailMessage = `
+      <html>
+        <head>
+          <style>
+            /* CSS styles for better email presentation */
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+            }
+            .container {
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+              border: 1px solid #ccc;
+              border-radius: 5px;
+              background-color: #f9f9f9;
+            }
+            h2 {
+              color: #333;
+            }
+            p {
+              margin-bottom: 10px;
+            }
+            a {
+              color: #007bff;
+              text-decoration: none;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h2>${emailSubject}</h2>
+            <p>Your article titled "${article.title}" has been sent for resubmission with the following details:</p>
+            <p>Issue: ${title}</p>
+            <p>Description: ${description}</p>
+            <p>Please resubmit your article with necessary changes for further consideration.</p>
+            <p>Thank you,</p>
+            <p>HPU E-Journal</p>
+            <p>Link to the corrected article: <a href="${link}" target="_blank">Click here</a></p>
+            <p>Or use this URL: ${link}</p>
+          </div>
+        </body>
+      </html>
+    `;
 
     await sendMail(user.email, emailSubject, emailMessage);
 
@@ -420,25 +600,81 @@ export const sendToPublish = async (req, res, next) => {
 
     // Update the article status to "readytopublish"
     article.status = "readytopublish";
+    article.createdAt = Date.now();
 
     // Save the updated article
     await article.save();
 
     // Notify the admin via email about the article ready for publication
-    const admin = await User.findOne({ role: "admin" }); // You need to implement logic to find the admin user
+    const admin = await User.findOne({ role: "admin" });
 
     if (!admin) {
       return next(new ErrorHandler("Admin not found", 404));
     }
 
     const emailSubject = "Article Ready for Publication";
-    const emailMessage = `The article titled "${article.title}" is ready for publication. Please review and proceed with publication.`;
+    const emailMessage = `
+      <html>
+        <head>
+          <style>
+            /* Define CSS styles for the email */
+            body {
+              font-family: Arial, sans-serif;
+              background-color: #f4f4f4;
+              padding: 20px;
+            }
+            .container {
+              background-color: #fff;
+              border-radius: 5px;
+              padding: 20px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .title {
+              font-size: 20px;
+              font-weight: bold;
+              color: #333;
+            }
+            .message {
+              font-size: 16px;
+              color: #666;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <p class="title">Article Ready for Publication</p>
+            <p class="message">The article titled "<strong>${article.title}</strong>" is ready for publication.</p>
+            <p class="message">Please review and proceed with publication.</p>
+          </div>
+        </body>
+      </html>
+    `;
 
     await sendMail(admin.email, emailSubject, emailMessage);
 
     res.status(200).json({
       success: true,
       message: "Article marked as ready for publication",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPreviousArticles = async (req, res, next) => {
+  try {
+    const editorId = req.user.id; // Get the editor's ID from the authenticated user
+
+    // Find all articles assigned to the editor based on their ID
+    const previousArticles = await Articles.find({
+      editor: editorId,
+      status: { $ne: "underreview" }, // Find articles with status not equal to "underreview"
+    }).populate("author", "name email");
+
+    // Respond with the list of assigned articles
+    res.status(200).json({
+      success: true,
+      previousArticles,
     });
   } catch (error) {
     next(error);

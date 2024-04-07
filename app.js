@@ -10,20 +10,17 @@ import announcementRouter from "./routes/announcements.js";
 
 export const app = express();
 
+//specify path to env variables
+config({ path: "./configs/config.env" });
+
+//Middlewares
 const corsOptions = {
   origin: process.env.FRONTEND_URL,
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
 };
-
 app.use(cors(corsOptions));
 
-//specify path to env variables
-if (process.env.NODE_ENV !== "PRODUCTION") {
-  config({ path: "./configs/config.env" });
-}
-
-//Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -34,7 +31,7 @@ app.use("/api/v1/volumes", volumeRouter);
 app.use("/api/v1/announcements", announcementRouter);
 
 app.get("/", (req, res) => {
-  res.send("hi");
+  res.send("working");
 });
 
 //Error Middleware

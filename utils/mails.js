@@ -17,7 +17,7 @@ export const sendMail = async (email, subject, message) => {
       from: process.env.SMPT_MAIL,
       to: email,
       subject,
-      text: message,
+      html: message,
     };
 
     // Send the email
@@ -26,5 +26,3 @@ export const sendMail = async (email, subject, message) => {
     console.error("Error sending email:", error);
   }
 };
-
-
